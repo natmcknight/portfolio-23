@@ -1,115 +1,63 @@
-import React from 'react';
-import { Box } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { animated, useTransition } from 'react-spring';
-
-// Panel components
+import React, { useState, useEffect } from 'react';
 import HomePanel from '../../routes/HomePanel';
 import CaseStudy1 from '../../routes/CaseStudy1';
 import CaseStudy2 from '../../routes/CaseStudy2';
-import Project1 from '../../routes/Project1';
-import Project2 from '../../routes/Project2';
-import Project3 from '../../routes/Project3';
-import Project4 from '../../routes/Project4';
-import Project5 from '../../routes/Project5';
-import Project6 from '../../routes/Project6';
-import Project7 from '../../routes/Project7';
-import ResumePanel from '../../routes/ResumePanel';
-import ContactPanel from '../../routes/ContactPanel';
+import './MainPanel.css';
 
-function MainPanel() {
 
-  const panelsOrder = [
-    { name: 'HomePanel', path: '/home' },
-    { name: 'CaseStudy1', path: '/case-study1' },
-    { name: 'CaseStudy2', path: '/case-study2' },
-    { name: 'Project1', path: '/project1' },
-    { name: 'Project2', path: '/project2' },
-    { name: 'Project3', path: '/project3' },
-    { name: 'Project4', path: '/project4' },
-    { name: 'Project5', path: '/project5' },
-    { name: 'Project6', path: '/project6' },
-    { name: 'Project7', path: '/project7' },
-    { name: 'ResumePanel', path: '/resume' },
-    { name: 'ContactPanel', path: '/contact' },
-  ];
+const MainPanel = () => {
+  const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
+  const [opacity, setOpacity] = useState(1);
+  const [scrollDirection, setScrollDirection] = useState(null);
 
-  // Mapping panel names to components
-  const panelComponents = {
-    HomePanel: <HomePanel />,
-    CaseStudy1: <CaseStudy1 />,
-    CaseStudy2: <CaseStudy2 />,
-    Project1: <Project1 />,
-    Project2: <Project2 />,
-    Project3: <Project3 />,
-    Project4: <Project4 />,
-    Project5: <Project5 />,
-    Project6: <Project6 />,
-    Project7: <Project7 />,
-    ResumePanel: <ResumePanel />,
-    ContactPanel: <ContactPanel />,
-  };
-
-  const [activePanelIndex, setActivePanelIndex] = useState(0);
+  const panels = [<HomePanel />, <CaseStudy1 />, <CaseStudy2 />];
 
   const handleScroll = (e) => {
-    const direction = e.deltaY > 0 ? 1 : -1;
-    let nextIndex = activePanelIndex + direction;
-
-    // Ensure that nextIndex is within bounds
-    if (nextIndex < 0) {
-      nextIndex = 0;
-    } else if (nextIndex >= panelsOrder.length) {
-      nextIndex = panelsOrder.length - 1;
-    }
-
-    setActivePanelIndex(nextIndex);
-  };
-
-  // Debounce function to control the firing rate of the scroll event
-  const debounce = (func, wait) => {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
+    const direction = e.deltaY > 0 ? 'down' : 'up';
+    setScrollDirection(direction);
   };
 
   useEffect(() => {
-    const debouncedHandleScroll = debounce(handleScroll, 10); // Adjust the delay as needed
+    let timer;
+    if (scrollDirection === 'down' && opacity > 0) {
+      timer = setInterval(() => {
+        setOpacity((prevOpacity) => prevOpacity - 0.1);
+      }, 50);
+    } else if (scrollDirection === 'up' && opacity < 1) {
+      timer = setInterval(() => {
+        setOpacity((prevOpacity) => prevOpacity + 0.1);
+      }, 50);
+    }
 
-    const mainPanel = document.querySelector('.main-panel');
-    mainPanel.addEventListener('wheel', debouncedHandleScroll);
+    if (opacity === 0 && currentPanelIndex < panels.length - 1) {
+      setCurrentPanelIndex((prevIndex) => prevIndex + 1);
+      setOpacity(1);
+    } else if (opacity === 1 && currentPanelIndex > 0) {
+      setCurrentPanelIndex((prevIndex) => prevIndex - 1);
+      setOpacity(0);
+    }
 
-    return () => mainPanel.removeEventListener('wheel', debouncedHandleScroll);
-  }, [activePanelIndex]);
-
-  const transitions = useTransition(activePanelIndex, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    config: { duration: 1000 },
-    keys: activePanelIndex,
-    trail: 10, // Added trail property to create overlap between transitions
-  });
+    return () => clearInterval(timer);
+  }, [scrollDirection, opacity, currentPanelIndex]);
 
   return (
-    <Box className="main-panel" sx={{ 
-      width: '100%',
-      height: '100vh',
-      overflowY: 'hidden',
-      position: 'relative'
-    }}>
-      {transitions((style) => { // Removed index from the parameters
-        console.log("Rendering panel with index:", activePanelIndex);
-        return (
-          <animated.div style={style}>
-            {panelComponents[panelsOrder[activePanelIndex].name]}
-          </animated.div>
-        );
-      })}
-    </Box>
-  );   
-}
+    <div className="main-panel" onWheel={handleScroll}>
+      {panels.map((panel, index) => (
+        <div
+          key={index}
+          className="panel"
+          style={{
+            opacity: index === currentPanelIndex ? opacity : 0,
+            transition: 'opacity 0.5s ease-in-out',
+          }}
+        >
+          {panel}
+        </div>
+      ))}
+    </div>
+  );
+  
+};
 
 export default MainPanel;
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { Grid, Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { useMode, ColorModeContext } from './theme/theme';

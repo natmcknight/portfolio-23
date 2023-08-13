@@ -6,18 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
 
 // Panel components
-import HomePanel from '../../routes/HomePanel';
-import CaseStudy1 from '../../routes/CaseStudy1';
-import CaseStudy2 from '../../routes/CaseStudy2';
-import Project1 from '../../routes/Project1';
-import Project2 from '../../routes/Project2';
-import Project3 from '../../routes/Project3';
-import Project4 from '../../routes/Project4';
-import Project5 from '../../routes/Project5';
-import Project6 from '../../routes/Project6';
-import Project7 from '../../routes/Project7';
-import ResumePanel from '../../routes/ResumePanel';
-import ContactPanel from '../../routes/ContactPanel';
+import HomePanel from '../../../routes/HomePanel';
+import CaseStudy1 from '../../../routes/CaseStudy1';
+import CaseStudy2 from '../../../routes/CaseStudy2';
+import Project1 from '../../../routes/Project1';
+import Project2 from '../../../routes/Project2';
+import Project3 from '../../../routes/Project3';
+import Project4 from '../../../routes/Project4';
+import Project5 from '../../../routes/Project5';
+import Project6 from '../../../routes/Project6';
+import Project7 from '../../../routes/Project7';
+import ResumePanel from '../../../routes/ResumePanel';
+import ContactPanel from '../../../routes/ContactPanel';
 
 function MainPanel() {
   

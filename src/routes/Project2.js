@@ -3,7 +3,7 @@ import { Box, Typography, Button, useTheme } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function Project2() {
-  const hasProjectDetail = false;
+  const hasProjectDetail = true;
   const theme = useTheme();
 
   return (
